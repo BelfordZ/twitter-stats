@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "async": "~1.4.2",
+    "clone": "^1.0.2",
     "oauth": "^0.9.13",
     "underscore": "~1.8.3"
   }
