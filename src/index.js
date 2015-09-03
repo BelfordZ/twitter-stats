@@ -42,13 +42,38 @@ function Twitter(opts) {
     host: 'api.twitter.com',
     pathname: '/1.1/statuses/user_timeline.json',
     query: {
-      count: 200
+      count: 200,
+      include_rts: false,
+      exclude_replies: true,
+      trim_user: true
     }
   };
 }
 
 
 //public methods
+
+Twitter.prototype.fetchTweetsSinceForList = function(usernames, sinceDate, cb) {
+  var _this = this;
+
+  var tweets = {};
+
+  async.each(
+    usernames,
+    function(username, _cb) {
+      _this.fetchTweetsSince(username, sinceDate, function(err, userTweets) {
+        if (err) { return _cb(err, null); }
+
+        tweets[username] = userTweets;
+
+        return _cb(null, null);
+      });
+    },
+    function(err) {
+      if (err) { return cb(err, null); }
+      return cb(null, tweets);
+    });
+};
 
 Twitter.prototype.fetchTweetsSince = function(username, sinceDate, cb) {
   if (!username || !sinceDate || typeof cb !== 'function') {
@@ -65,13 +90,11 @@ Twitter.prototype.fetchTweetsSince = function(username, sinceDate, cb) {
       return false;
     }
 
-    console.log(tweets[0]);
-
     // the tweets must have at least one tweet older than the since date
     // so that we know that we have looked at the last two weeks
     for (var i = 0; i < tweets.length; i++) {
       if (new Date(tweets[i].created_at) < sinceDate) {
-        tweets = tweets.slice(0, i);
+        tweets = tweets.slice(0, i + 1);
         return false;
       }
     }
@@ -83,7 +106,10 @@ Twitter.prototype.fetchTweetsSince = function(username, sinceDate, cb) {
   async.doWhilst(
     function(_cb) {
       _this._getTweets({ username: username, maxId: maxId }, function(err, resultTweets) {
+        if (err) { return _cb(err); }
+
         tweets = tweets.concat(resultTweets);
+
         return _cb(null, null);
       });
     },
@@ -106,11 +132,13 @@ Twitter.prototype._getTweets = function(opts, cb) {
     this.accessTokenSecret,
     function(err, response) {
       if (err) { return cb(err); }
+
       try {
         var res = JSON.parse(response);
       } catch (e) {
         return cb(e);
       }
+
       return cb(null, res);
     }
   );

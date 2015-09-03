@@ -80,6 +80,18 @@ describe('twitter', function() {
 
       });
     });
+
+    describe('fetchTweetsSinceForList', function() {
+      it('returns an object keyd by username', function(done) {
+        var oldFetch = testTwitter.fetchTweetsSince;
+        testTwitter.fetchTweetsSince = sinon.stub().callsArgWith(-1, null, [ { tweet: true } ]);
+        testTwitter.fetchTweetsSinceForList(['belfordz'], new Date(), function(err, result) {
+          _.keys(result)[0].should.equal('belfordz');
+          testTwitter.fetchTweetsSince = oldFetch;
+          done();
+        })
+      });
+    });
   });
 
   describe('private functions', function() {
@@ -101,8 +113,9 @@ describe('twitter', function() {
 
     describe('_buildUrl', function() {
       it('takes a username and optionally a since_id and returns a url', function() {
-        var expectedUrl = 'https://api.twitter.com/1.1/statuses/' +
-              'user_timeline.json?count=200&screen_name=belfordz';
+        var expectedUrl = 'https://api.twitter.com/1.1/statuses/user_timeline.json' +
+              '?count=200&include_rts=false&exclude_replies=true&trim_user=true&screen_name=belfordz';
+
         var testUrl = testTwitter._buildUrl('belfordz');
         (typeof testUrl).should.equal('string');
 
