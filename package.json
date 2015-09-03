@@ -1,0 +1,29 @@
+{
+  "name": "twitter-stats",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/BelfordZ/twitter-stats.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/BelfordZ/twitter-stats/issues"
+  },
+  "homepage": "https://github.com/BelfordZ/twitter-stats",
+  "devDependencies": {
+    "mocha": "~2.3.0",
+    "sinon": "~1.16.1",
+    "should": "~7.1.0"
+  },
+  "dependencies": {
+    "async": "~1.4.2",
+    "oauth": "^0.9.13",
+    "underscore": "~1.8.3"
+  }
+}
