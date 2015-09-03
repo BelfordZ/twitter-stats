@@ -3,13 +3,17 @@ var _ = require('underscore');
 
 var Twitter = require('./');
 
-var testTwitter = new Twitter({
-  consumerSecret: 'dsqEWHgvwAwaUus2w52MZbq5hPeDxpIWvqJfG77caA',
-  consumerKey: 'Fr8hknlt7BJrPWrdQziA',
-  accessToken: '1238826264-ndXU69TndDZNyEnpiWhZ3JPJY3t03ZuvcC6PQbg',
-  accessTokenSecret: '0lq4TFFiahARw1IzQAuIMOJJXLv4mypbOVVueRszyOj3i'
-});
+var consumerSecret = process.env.consumerSecret;
+var consumerKey = process.env.consumerKey;
+var accessToken = process.env.accessToken;
+var accessTokenSecret = process.env.accessTokenSecret;
 
+var testTwitter = new Twitter({
+  consumerSecret: consumerSecret,
+  consumerKey: consumerKey,
+  accessToken: accessToken,
+  accessTokenSecret: accessTokenSecret
+});
 
 var getStats = function(cb) {
   var twoWeeksAgo = moment().subtract(2, 'weeks');
